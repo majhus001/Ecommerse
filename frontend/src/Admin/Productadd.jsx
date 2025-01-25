@@ -118,7 +118,7 @@ const ProductAddPage = () => {
       await axios.delete(
         `http://localhost:5000/api/${product.category}/${product.name}`
       );
-      alert("Product deleted successfully!");
+      alert("Product deleted successfullyy!");
       setProduct({
         name: "",
         price: "",
