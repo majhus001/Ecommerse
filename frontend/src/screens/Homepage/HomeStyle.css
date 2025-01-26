@@ -76,7 +76,8 @@ a {
 }
 
 .nav-search-bar button:hover {
-  background: #004099;
+  background: #0056b3;
+  color: #fff;
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -85,8 +86,8 @@ a {
   padding: 8px 14px;
   border: none;
   border-radius: 20px;
-  background: #28a745;
-  color: #fff;
+  background: #fff;
+  color: #0056b3;
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
@@ -94,9 +95,42 @@ a {
 }
 
 #login:hover {
-  background: #1e7e34;
+  background: #0056b3;
+  color: #fff;
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#cart {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  background: #fff;
+  color: #0056b3;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+#cart:hover {
+  background: #0056b3;
+  color: #fff;
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#cart i {
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {

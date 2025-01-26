@@ -25,11 +25,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [mobilesRes, clothingsRes, homeAppliancesRes] = await Promise.all([
-          fetch("http://localhost:5000/api/mobiles/fetch"),
-          fetch("http://localhost:5000/api/clothings/fetch"),
-          fetch("http://localhost:5000/api/hoappliances/fetch"),
-        ]);
+        const [mobilesRes, clothingsRes, homeAppliancesRes] = await Promise.all(
+          [
+            fetch("http://localhost:5000/api/mobiles/fetch"),
+            fetch("http://localhost:5000/api/clothings/fetch"),
+            fetch("http://localhost:5000/api/hoappliances/fetch"),
+          ]
+        );
 
         if (!mobilesRes.ok || !clothingsRes.ok || !homeAppliancesRes.ok) {
           throw new Error("Error fetching data from one or more endpoints.");
@@ -88,16 +90,26 @@ const HomePage = () => {
       {/* Navbar */}
       <nav className="hm-navbar">
         <div className="nav-logo">
-          <h2>SHOPIQUE</h2>
+          <h2 onClick={() => navigate("/home")}>SHOPIQUE</h2>
         </div>
         <div className="nav-search-bar">
-          <input type="text" placeholder="Search for products..." />
-          <button>Search</button>
-          </div>
-          <Link to="/login">
-            <button id="login">LOGIN</button>
-          </Link>
-        
+          <input
+            type="text"
+            placeholder="Search for products..."
+            aria-label="Search for products"
+          />
+          <button>
+            <i className="fas fa-search"></i> Search
+          </button>
+        </div>
+        <div className="nav-actions">
+          <button id="cart">
+            <i className="fas fa-shopping-cart"></i> Cart
+          </button>
+          <button id="login">
+            <i className="fas fa-user"></i> Login
+          </button>
+        </div>
       </nav>
 
       <div className="main-container">
@@ -147,9 +159,18 @@ const HomePage = () => {
                     <div className="product-card" key={item.id || item._id}>
                       <Link
                         to={`/${item.route}`}
-                        state={{ name: item.name,brand: item.brand, price: item.price, stock: item.stock,
-                          description: item.description, image: item.image, 
-                         }}
+                        state={{
+                          name: item.name,
+                          price: item.price,
+                          brand: item.brand,
+                          image: item.image,
+                          rating: item.rating,
+                          description: item.description,
+                          stock: item.stock,
+                          route: item.route,
+                          category: item.category,
+                          deliverytime: item.deliverytime,
+                        }}
                       >
                         <img
                           src={`http://localhost:5000${item.image}`}
@@ -175,9 +196,18 @@ const HomePage = () => {
                     <div className="product-card" key={item.id || item._id}>
                       <Link
                         to={`/${item.route}`}
-                        state={{ name: item.name, price: item.price, stock: item.stock,
-                          description: item.description, image: item.image
-                         }}
+                        state={{
+                          name: item.name,
+                          price: item.price,
+                          brand: item.brand,
+                          image: item.image,
+                          rating: item.rating,
+                          description: item.description,
+                          stock: item.stock,
+                          route: item.route,
+                          category: item.category,
+                          deliverytime: item.deliverytime,
+                        }}
                       >
                         <img
                           src={`http://localhost:5000${item.image}`}
@@ -203,9 +233,18 @@ const HomePage = () => {
                     <div className="product-card" key={item.id || item._id}>
                       <Link
                         to={`/${item.route}`}
-                        state={{ name: item.name, price: item.price, stock: item.stock,
-                          description: item.description, image: item.image
-                         }}
+                        state={{
+                          name: item.name,
+                          price: item.price,
+                          brand: item.brand,
+                          image: item.image,
+                          rating: item.rating,
+                          description: item.description,
+                          stock: item.stock,
+                          route: item.route,
+                          category: item.category,
+                          deliverytime: item.deliverytime,
+                        }}
                       >
                         <img
                           src={`http://localhost:5000${item.image}`}

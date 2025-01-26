@@ -1,12 +1,24 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductList.css";
 
 const ProductList = () => {
   const location = useLocation();
-  const { name, price, stock, description, image } = location.state;
+  const navigate = useNavigate();
+  const {
+    name,
+    price,
+    brand,
+    stock,
+    description,
+    image,
+    rating,
+    category,
+    deliverytime,
+  } = location.state || {}; // Fallback to prevent errors
 
   const [activeDropdown, setActiveDropdown] = useState(null); // Track which dropdown is open
+  const [searchQuery, setSearchQuery] = useState(""); // State for search input
 
   const handleDropdownClick = (dropdown) => {
     setActiveDropdown((prev) => (prev === dropdown ? null : dropdown)); // Toggle the dropdown
@@ -17,92 +29,98 @@ const ProductList = () => {
     // Add your "Add to Cart" logic here
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    // Add search logic here
+  };
+
   return (
-    <div className="productlist-page">
-      {/* Filters Section */}
-      <div className="product-filter">
-        <h3>Filters</h3>
-        <hr />
-
-        {/* Price Filter */}
-        <div className="filter-item">
-          <h4
-            className="filter-heading"
-            onClick={() => handleDropdownClick("price")}
-          >
-            Price
-          </h4>
-          {activeDropdown === "price" && (
-            <ul className="dropdown-menu">
-              <li>Below ₹500</li>
-              <li>₹500 - ₹1,000</li>
-              <li>₹1,000 - ₹5,000</li>
-              <li>₹5,000 - ₹10,000</li>
-              <li>Above ₹10,000</li>
-            </ul>
-          )}
+    <div>
+      {/* Navbar */}
+      <nav className="hm-navbar">
+        <div className="nav-logo">
+          <h2 onClick={() => navigate("/home")}>SHOPIQUE</h2>
         </div>
-
-        {/* Brand Filter */}
-        <div className="filter-item">
-          <h4
-            className="filter-heading"
-            onClick={() => handleDropdownClick("brand")}
-          >
-            Brand
-          </h4>
-          {activeDropdown === "brand" && (
-            <ul className="dropdown-menu">
-              <li>Samsung</li>
-              <li>Apple</li>
-              <li>OnePlus</li>
-              <li>Mi</li>
-              <li>Realme</li>
-            </ul>
-          )}
-        </div>
-
-        {/* Delivery Filter */}
-        <div className="filter-item">
-          <h4
-            className="filter-heading"
-            onClick={() => handleDropdownClick("delivery")}
-          >
-            Delivery
-          </h4>
-          {activeDropdown === "delivery" && (
-            <ul className="dropdown-menu">
-              <li>Fast Delivery</li>
-              <li>Standard Delivery</li>
-            </ul>
-          )}
-        </div>
-      </div>
-
-      {/* Product Details Section */}
-      <div className="productlist-container">
-        <div className="productlist-image">
-          <img src={`http://localhost:5000${image}`} alt={name} />
-        </div>
-
-        <div className="product-details">
-          <h2 className="product-name">{name}</h2>
-          <p className="product-price">
-            <strong>Price:</strong> ₹{price}
-          </p>
-          <p className="product-description">
-            <strong>Description:</strong> {description}
-          </p>
-          <p className="product-stock">
-            <strong>Stock:</strong> {stock > 0 ? `${stock} available` : "Out of stock"}
-          </p>
-          <button
-            className="add-to-cart-btn"
-            onClick={handleAddToCart}
-            disabled={stock <= 0}
-          >
-            {stock > 0 ? "Add to Cart" : "Out of Stock"}
+        <div className="nav-search-bar">
+          <input
+            type="text"
+            placeholder="Search for products..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            aria-label="Search for products"
+          />
+          <button>
+            <i className="fas fa-search"></i> Search
           </button>
+        </div>
+        <div className="nav-actions">
+          <button id="cart">
+            <i className="fas fa-shopping-cart"></i> Cart
+          </button>
+          <button id="login">
+            <i className="fas fa-user"></i> Login
+          </button>
+        </div>
+      </nav>
+
+      {/* Product Page */}
+      <div className="productlist-page">
+        {/* Product Details Section */}
+        <div className="productlist-container">
+          {/* Product Image */}
+          <div className="prod-img-btn-cont">
+            <div className="productlist-image">
+              {image ? (
+                <img src={`http://localhost:5000${image}`} alt={name} />
+              ) : (
+                <p>No image available</p>
+              )}
+            </div>
+            <div className="prod-img-btn">
+              <button
+                className="add-to-cart-btn"
+                onClick={handleAddToCart}
+                disabled={stock <= 0}
+              >
+                <i className="fas fa-shopping-cart"></i>
+                {stock > 0 ? "Add to Cart" : "Out of Stock"}
+              </button>
+              <button
+                className="add-to-cart-btn"
+                onClick={handleAddToCart}
+                disabled={stock <= 0}
+              >
+                {stock > 0 ? "Buy now" : "Out of Stock"}
+              </button>
+            </div>
+          </div>
+          {/* Product Details */}
+          <div className="product-details">
+            <h2 className="product-name">{name || "Product Name"}</h2>
+            <p className="product-price">
+              <strong>Price:</strong> ₹{price || "N/A"}
+            </p>
+            <p className="product-brand">
+              <strong>Brand:</strong> {brand || "N/A"}
+            </p>
+            <p className="product-rating">
+              <strong>Rating:</strong> {rating || "N/A"} ⭐
+            </p>
+            <p className="product-category">
+              <strong>Category:</strong> {category || "N/A"}
+            </p>
+            <p className="product-delivery-time">
+              <strong>Delivery Time:</strong> {deliverytime || "N/A"}
+            </p>
+            <p className="product-description">
+              <strong>Description:</strong>{" "}
+              {description || "No description available"}
+            </p>
+            <p className="product-stock">
+              <strong>Stock:</strong>{" "}
+              {stock > 0 ? `${stock} available` : "Out of stock"}
+            </p>
+          </div>
         </div>
       </div>
     </div>
