@@ -130,14 +130,27 @@
       width: 100%;
     }
   }
+
+  .add-to-cart-btn {
+    margin-top: 10px;
+    padding: 12px 18px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #0056b3;
+  }
   
   .productlist-page {
     display: flex;
     flex-direction: row;
     padding: 20px;
   }
-  
-  
   
   .productlist-container {
     width: 70%; /* Adjusted for more space */
@@ -154,7 +167,6 @@
     object-fit: contain; /* Ensures the entire image fits within the container */
   }
   
-
   .prod-img-btn{
     margin-left: 40px;
   }
@@ -163,34 +175,97 @@
     margin: 10px 10px;
   }
   
+
+  .prodlist-rat {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto; 
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
   .product-details {
-    margin-top: 10px;
+    margin-bottom: 20px;
   }
   
   .product-name {
-    font-size: 18px;
+    font-size: 1.5rem;
     font-weight: bold;
-    margin: 10px 0;
+    margin-bottom: 10px;
   }
   
-  .product-price,
-  .product-stock {
-    font-size: 14px;
-    margin: 5px 0;
+  .product-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
   }
   
-  .add-to-cart-btn {
-    margin-top: 10px;
-    padding: 12px 18px;
-    font-size: 14px;
+  .prodlist-price,
+  .product-brand,
+  .product-stock,
+  .product-delivery-time {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .delivery-checker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .delivery-checker-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  .delivery-input {
+    width: 200px;
+    padding: 8px 10px;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    outline: none;
+    transition: border-bottom-color 0.3s ease;
+  }
+  
+  .delivery-input:focus {
+    border-bottom-color: #2874f0; /* Blue border on focus */
+  }
+  
+  .check-button {
+    padding: 8px 15px;
+    font-size: 1rem;
+    background-color: #2874f0;
     color: #fff;
-    background-color: #007bff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   
-  .add-to-cart-btn:hover {
-    background-color: #0056b3;
+  .check-button:hover {
+    background-color: #185bb5;
+  }
+  
+  .estimated-delivery-date {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #888;
+  }
+  
+  .ratings-reviews {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
   }
   

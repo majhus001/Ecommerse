@@ -6,6 +6,8 @@ import Login from './LogSin/Login';
 import ProductPage from './screens/Productscreens/Products';
 import ProductAddPage from './Admin/Productadd';
 import ProductList from './screens/Productscreens/ProductList';
+import Cart from './screens/Productscreens/Cart';
+import Navbar from './screens/navbar/Navbar';
 
 const App = () => {
   return (
@@ -14,10 +16,12 @@ const App = () => {
         {/* Set initial route */}
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/navbar" element={<Navbar />} />
         <Route path="/prodlist" element={<ProductList />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/product" element={<ProductPage />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/adprod" element={<ProductAddPage />} />
 
       </Routes>

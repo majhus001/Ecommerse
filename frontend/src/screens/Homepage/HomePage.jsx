@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./HomeStyle.css";
 import bannerImage from "../../assets/banner1.jpeg";
 import bannerImage1 from "../../assets/banner2.jpeg";
 import bannerImage2 from "../../assets/banner3.jpeg";
 
 const HomePage = () => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const { userId } = location.state || {};
   const [mobiles, setMobiles] = useState([]);
   const [clothings, setClothings] = useState([]);
   const [homeAppliances, setHomeAppliances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const bannerImages = [bannerImage, bannerImage1, bannerImage2];
   const [currentImage, setCurrentImage] = useState(0);
@@ -21,6 +24,14 @@ const HomePage = () => {
     minutes: 0,
     seconds: 0,
   });
+
+  useEffect(() => {
+    if (userId) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [userId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,17 +109,38 @@ const HomePage = () => {
             placeholder="Search for products..."
             aria-label="Search for products"
           />
-          <button>
+          <button className="nav-btns">
             <i className="fas fa-search"></i> Search
           </button>
         </div>
         <div className="nav-actions">
-          <button id="cart">
+          <button
+            className="nav-btns"
+            onClick={() => {
+              navigate("/cart", { state: { userId: userId } });
+            }}
+          >
             <i className="fas fa-shopping-cart"></i> Cart
           </button>
-          <button id="login">
-            <i className="fas fa-user"></i> Login
-          </button>
+          {isLoggedIn ? (
+            <button
+              className="nav-btns"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
+              <i className="fas fa-user"></i> My Profile
+            </button>
+          ) : (
+            <button
+              className="nav-btns"
+              onClick={() => {
+                navigate("/login"); // Replace with your login navigation logic
+              }}
+            >
+              <i className="fas fa-user"></i> Login
+            </button>
+          )}
         </div>
       </nav>
 
@@ -160,6 +192,7 @@ const HomePage = () => {
                       <Link
                         to={`/${item.route}`}
                         state={{
+                          userId: userId,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,
@@ -197,6 +230,7 @@ const HomePage = () => {
                       <Link
                         to={`/${item.route}`}
                         state={{
+                          userId: userId,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,
@@ -234,6 +268,7 @@ const HomePage = () => {
                       <Link
                         to={`/${item.route}`}
                         state={{
+                          userId: userId,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,

@@ -11,7 +11,6 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model("users", UserSchema);
 
-// Signup Route
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
   console.log(req.body);
@@ -60,7 +59,8 @@ router.post("/login", async (req, res) => {
     }
 
     console.log("Login success");
-    res.status(200).json({ success: true, message: "Login successful!" });
+    console.log(user._id);
+    res.status(200).json({ success: true, message: "Login successful!",userId : user._id});
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ success: false, message: "An error occurred. Please try again." });

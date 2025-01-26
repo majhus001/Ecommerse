@@ -113,8 +113,7 @@ router.delete("/:_id", async (req, res) => {
 router.put("/update/:_id", upload.single("image"), async (req, res) => {
   const { _id } = req.params;
   const { name, price, brand, rating, description, stock, route, category, deliverytime, image } = req.body;
-console.log("bf-up");
-console.log(_id)
+
   try {
     const updateFields = {
       name,
@@ -137,7 +136,6 @@ console.log(_id)
       { $set: { ...updateFields, updatedAt: Date.now() } },
       { new: true }
     );
-    console.log(updatedProduct)
 
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found." });

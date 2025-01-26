@@ -25,9 +25,10 @@ const Login = () => {
         formData
       );
       if (response.data.success) {
+        const userId = response.data.userId
         setMessage("Login successful!");
         setTimeout(() => {
-          navigate("/home");
+          navigate("/home", { state: { userId } });
         }, 1000);
       } else {
         setMessage(response.data.message || "Login failed. Try again.");

@@ -133,7 +133,6 @@ router.put("/update/:_id", upload.single("image"), async (req, res) => {
       { $set: { ...updateFields, updatedAt: Date.now() } },
       { new: true }
     );
-    console.log(updatedProduct)
 
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found." });
