@@ -10,6 +10,19 @@
   position: relative; /* Ensures that the suggestion box is positioned relative to this container */
 }
 
+.adprod-search-bar {
+  margin-bottom: 20px;
+  position: relative; /* Required for absolute positioning of the suggestion box */
+}
+
+.adprod-search-bar input {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 1000px;
+}
+
 .product-add-page h2 {
   text-align: center;
   color: #333;
@@ -75,18 +88,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.search-bar {
-  margin-bottom: 20px;
-  position: relative; /* Required for absolute positioning of the suggestion box */
-}
 
-.search-bar input {
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  width: 1000px;
-}
 
 .suggestions-list {
   position: absolute; /* Positions the suggestion box over the content */

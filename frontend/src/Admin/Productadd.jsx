@@ -4,7 +4,7 @@ import "./Productadd.css";
 
 const ProductAddPage = () => {
   const [product, setProduct] = useState({
-    id:"",
+    _id:"",
     name: "",
     price: "",
     brand: "",
@@ -116,7 +116,7 @@ const ProductAddPage = () => {
     try {
       setLoading(true);
       await axios.delete(
-        `http://localhost:5000/api/${product.category}/${product.name}`
+        `http://localhost:5000/api/${product.category}/${product._id}`
       );
       alert("Product deleted successfullyy!");
       setProduct({
@@ -161,8 +161,9 @@ const ProductAddPage = () => {
     if (imageFile) {
       formData.append("image", imageFile); // Add the new image if uploaded
     }
-  
-    let apiEndpoint = `http://localhost:5000/api/${product.category}/update/${product.name}`;
+    console.log("bfapi")
+    console.log(product.category)
+    let apiEndpoint = `http://localhost:5000/api/${product.category}/update/${product._id}`;
   
     try {
       setLoading(true);
@@ -197,8 +198,8 @@ const ProductAddPage = () => {
 
   const handleSuggestionClick = (suggestion) => {
     setSugclick(true);
-    console.log(suggestion._id);
     setProduct({
+      _id: suggestion._id,
       name: suggestion.name,
       price: suggestion.price,
       brand: suggestion.brand,
@@ -206,9 +207,10 @@ const ProductAddPage = () => {
       description: suggestion.description,
       stock: suggestion.stock,
       route: suggestion.route,
-      category: "mobiles", 
+      category: suggestion.category, 
       deliverytime: suggestion.deliverytime,
     });
+    console.log(suggestion.category)
     setImagePreview(suggestion.image);
     setSuggestions([]);
   };
@@ -234,7 +236,7 @@ const ProductAddPage = () => {
         </select>
       </div>
 
-      <div className="search-bar">
+      <div className="adprod-search-bar">
         <label>Search Products:</label>
         <br />
         <input

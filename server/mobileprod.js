@@ -41,8 +41,6 @@ router.use("/uploads/mobiles/", express.static("uploads/mobiles"));
 router.post("/prod", upload.single("image"), async (req, res) => {
   try {
     const { name, price, brand, rating, description, stock, route, category, deliverytime } = req.body;
-    
-    // Store image path in array (use req.file for uploaded file)
     const imagePath = req.file ? `/uploads/mobiles/${req.file.filename}` : null;
   
     const newProduct = new Product({
@@ -59,8 +57,6 @@ router.post("/prod", upload.single("image"), async (req, res) => {
 
     });
 
-    console.log(deliverytime)
-
     await newProduct.save();
 
     res.status(201).json({ message: "Mobile product added successfully" });
@@ -75,7 +71,6 @@ router.post("/prod", upload.single("image"), async (req, res) => {
 router.get("/fetch", async (req, res) => {
   try {
     const products = await Product.find().limit(10); // Fetch all products
-    console.log(products)
     res.status(200).json(products);
     
   } catch (error) {
@@ -91,8 +86,7 @@ router.get("/search", async (req, res) => {
   try {
     const products = await Product.find({
       name: { $regex: query, $options: "i" },
-    }).limit(10); // Limit to 10 results
-   console.log(products)
+    }).limit(10); 
     res.json(products);
   } catch (error) {
     console.error("Error searching products:", error);
@@ -101,10 +95,10 @@ router.get("/search", async (req, res) => {
 });
 
 // Delete Mobile Product
-router.delete("/:name", async (req, res) => {
+router.delete("/:_id", async (req, res) => {
   try {
-    const productName = req.params.name;
-    const result = await Product.deleteOne({ name: productName });
+    const productId = req.params._id;
+    const result = await Product.deleteOne({ _id: productId });
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -115,14 +109,13 @@ router.delete("/:name", async (req, res) => {
 });
 
 
-
-
-router.put("/update/:name", upload.single("image"), async (req, res) => {
-  const { name } = req.params;
-  const { price, brand, rating, description, stock, route, category, deliverytime, image } = req.body;
-
+router.put("/update/:_id", upload.single("image"), async (req, res) => {
+  const { _id } = req.params;
+  const { name, price, brand, rating, description, stock, route, category, deliverytime, image } = req.body;
+  
   try {
     const updateFields = {
+      name,
       price,
       brand,
       image,
@@ -132,23 +125,17 @@ router.put("/update/:name", upload.single("image"), async (req, res) => {
       route,
       category,
       deliverytime,
-      // updatedAt: Date.now(), 
     };
 
-    console.log(deliverytime);
-    // console.log(updatedAt);
-
-    // Handle image update
     if (req.file) {
       updateFields.image = `/uploads/mobiles/${req.file.filename}`;
     }
-
     const updatedProduct = await Product.findOneAndUpdate(
-      { name },
+      { _id },
       { $set: { ...updateFields, updatedAt: Date.now() } },
       { new: true }
     );
-    
+    console.log(updatedProduct)
 
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found." });

@@ -42,6 +42,7 @@ const HomePage = () => {
         setMobiles(mobilesData);
         setClothings(clothingsData);
         setHomeAppliances(homeAppliancesData);
+        console.log(mobilesData);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load data. Please try again later.");
@@ -85,17 +86,18 @@ const HomePage = () => {
   return (
     <div className="app">
       {/* Navbar */}
-      <nav className="navbar">
-        <div className="logo">
-          <h2>E-Commerce Website</h2>
+      <nav className="hm-navbar">
+        <div className="nav-logo">
+          <h2>SHOPIQUE</h2>
         </div>
-        <div className="search-bar">
+        <div className="nav-search-bar">
           <input type="text" placeholder="Search for products..." />
           <button>Search</button>
+          </div>
           <Link to="/login">
             <button id="login">LOGIN</button>
           </Link>
-        </div>
+        
       </nav>
 
       <div className="main-container">
@@ -145,8 +147,8 @@ const HomePage = () => {
                     <div className="product-card" key={item.id || item._id}>
                       <Link
                         to={`/${item.route}`}
-                        state={{ name: item.name, price: item.price, stock: item.stock,
-                          description: item.description, image: item.image
+                        state={{ name: item.name,brand: item.brand, price: item.price, stock: item.stock,
+                          description: item.description, image: item.image, 
                          }}
                       >
                         <img

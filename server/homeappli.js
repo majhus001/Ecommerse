@@ -7,13 +7,19 @@ const router = express.Router();
 
 // Product Schema
 const productSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  image: String,
-  stock: Number,
-  description: String,
-  route: String,
-});
+  name: { type: String, required: true }, 
+  price: { type: Number, required: true }, 
+  brand: { type: String }, 
+  image: { type: String }, 
+  rating: { type: Number, default: 0 },
+  description: { type: String, required: true },
+  stock: { type: Number, required: true },
+  route: { type: String },
+  category: { type: String, required: true }, 
+  deliverytime: { type: String },
+ },
+ { timestamps: true },
+);
 
 const Product = mongoose.model("homeappliances", productSchema);
 
@@ -35,16 +41,20 @@ router.use("/uploads/homeappliances/", express.static("uploads/homeappliances"))
 // Add homeappliances Product
 router.post("/prod", upload.single("image"), async (req, res) => {
   try {
-    const { name, price, stock, description, route } = req.body;
+    const { name, price, brand, rating, description, stock, route, category, deliverytime } = req.body;
     const imagePath = req.file ? `/uploads/homeappliances/${req.file.filename}` : null;
 
     const newProduct = new Product({
       name,
       price,
-      stock,
+      brand,
+      image: imagePath , 
+      rating,
       description,
+      stock,
       route,
-      image: imagePath,
+      category,
+      deliverytime,
     });
 
     await newProduct.save();
@@ -84,16 +94,55 @@ router.get("/search", async (req, res) => {
 });
 
 // Delete homeappliances Product
-router.delete("/:name", async (req, res) => {
+router.delete("/:_id", async (req, res) => {
   try {
-    const productName = req.params.name;
-    const result = await Product.deleteOne({ name: productName });
+    const productId = req.params._id;
+    const result = await Product.deleteOne({ name: productId });
     if (result.deletedCount === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete product", error });
+  }
+});
+
+router.put("/update/:_id", upload.single("image"), async (req, res) => {
+  const { _id } = req.params;
+  const { name, price, brand, rating, description, stock, route, category, deliverytime, image } = req.body;
+  
+  try {
+    const updateFields = {
+      name,
+      price,
+      brand,
+      image,
+      rating,
+      description,
+      stock,
+      route,
+      category,
+      deliverytime,
+    };
+
+    if (req.file) {
+      updateFields.image = `/uploads/clothings/${req.file.filename}`;
+    }
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id },
+      { $set: { ...updateFields, updatedAt: Date.now() } },
+      { new: true }
+    );
+    console.log(updatedProduct)
+
+    if (!updatedProduct) {
+      return res.status(404).json({ error: "Product not found." });
+    }
+
+    res.status(200).json({ message: "Product updated successfully", product: updatedProduct });
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ error: "Failed to update product" });
   }
 });
 
