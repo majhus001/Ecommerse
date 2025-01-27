@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Cart.css"; // Assuming you have a separate CSS file for styling
+import "./Cart.css"; 
+import Navbar from "../navbar/Navbar";
 
 export default function Cart() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { userId } = location.state || {}; // Retrieve userId from location state
-  const [cartItems, setCartItems] = useState([]); // State to store cart items
+  const { userId } = location.state || {}; 
+  const [cartItems, setCartItems] = useState([]);
+  const [updateMessage, setUpdateMessage] = useState(""); 
 
   useEffect(() => {
     if (userId) {
-      // Ensure fetch is only triggered when userId exists
       const fetchCartData = async () => {
         try {
           const response = await axios.get(
@@ -21,10 +22,9 @@ export default function Cart() {
             }
           );
           if (response.data.success) {
-            // Add the quantity property to each item (default to 1)
             const itemsWithQuantity = response.data.cartItems.map((item) => ({
               ...item,
-              quantity: item.quantity || 1, // If quantity doesn't exist, default it to 1
+              quantity: item.quantity || 1, 
             }));
             setCartItems(itemsWithQuantity);
           } else {
@@ -37,20 +37,56 @@ export default function Cart() {
 
       fetchCartData();
     }
-  }, [userId]); // Run the effect only when userId changes
+  }, [userId]);
 
-  const handleQuantityChange = (itemId, change) => {
-    setCartItems(
-      cartItems.map((item) =>
-        item._id === itemId
-          ? { ...item, quantity: Math.max(item.quantity + change, 1) } // Prevent quantity from going below 1
-          : item
-      )
+  const handleQuantityChange = async (itemId, change) => {
+    const updatedCartItems = cartItems.map((item) =>
+      item._id === itemId
+        ? { ...item, quantity: Math.max(item.quantity + change, 1) }
+        : item
     );
+    const updatedItem = updatedCartItems.find((item) => item._id === itemId);
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/cart/update-quantity`,
+        { 
+          userId: userId,
+          itemId: updatedItem.itemId,
+          quantity: updatedItem.quantity 
+        } 
+      );
+
+      console.log("f a a")
+
+      if (response.status === 200) {
+        setCartItems(updatedCartItems);
+        setUpdateMessage(`${updatedItem.name} quantity updated to ${updatedItem.quantity} `); 
+        setTimeout(() => {
+          setUpdateMessage("");
+        }, 5000);
+      } else {
+        console.error("Failed to update item quantity in the database");
+      }
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+    }
   };
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(cartItems.filter((item) => item._id !== itemId));
+  const handleRemoveItem = async (itemId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/cart/delete/${itemId}`
+      );
+
+      if (response.status === 200) {
+        setCartItems(cartItems.filter((item) => item._id !== itemId));
+      } else {
+        console.error("Failed to remove item from the cart");
+      }
+    } catch (error) {
+      alert("Error deleting cart items....");
+      console.error("Error removing item:", error.message);
+    }
   };
 
   const calculateTotalPrice = () => {
@@ -61,120 +97,128 @@ export default function Cart() {
   };
 
   const HandleShopNow = () => {
-    navigate("/home", { state: { userId } }); // Corrected navigate call
+    navigate("/home", { state: { userId } });
+  };
+
+  const handleBuyNow = () => {
+    const totItems = cartItems.length;
+    const totalPrice = calculateTotalPrice(); 
+    const discount = 0; 
+    const platformFee = 50;
+    const deliveryFee = 20; 
+  
+    navigate("/orderdet", {
+      state: {
+        cartItems,
+        userId,
+        totItems,
+        totalPrice,
+        discount,
+        platformFee,
+        deliveryFee
+      }
+    });
   };
 
   return (
     <div>
-      <nav className="hm-navbar">
-        <div className="nav-logo">
-          <h2 onClick={() => navigate("/home")}>SHOPIQUE</h2>
-        </div>
-        <div className="nav-search-bar">
-          <input
-            type="text"
-            placeholder="Search for products..."
-            aria-label="Search for products"
-          />
-          <button className="nav-btns">
-            <i className="fas fa-search"></i> Search
-          </button>
-        </div>
-        <div className="nav-actions">
-          <button className="nav-btns" onClick={ ()=>{ navigate('/cart', { state: { userId: userId } })}}>
-            <i className="fas fa-shopping-cart"></i> Cart
-          </button>
-          <button className="nav-btns" onClick={ () => {navigate('/login')}}>
-            <i className="fas fa-user"></i> Login
-          </button>
-        </div>
-      </nav>
-    
-    <div className="cart-container">
-      
-    <h1 className="cart-title">Your Cart</h1>
-      <div className="cart-prod">
-        
-        {userId ? (
-          cartItems.length > 0 ? (
-            <div className="cart-items">
-              {cartItems.map((item) => (
-                <div className="cart-item" key={item._id}>
-                  <img
-                    src={`http://localhost:5000${item.image}`}
-                    alt={item.name}
-                    className="cart-item-img"
-                  />
-                  <div className="cart-item-details">
-                    <h3 className="cart-item-name">{item.name}</h3>
-                    <p className="cart-item-brand">
-                      <strong>Brand:</strong> {item.brand}
-                    </p>
-                    <p className="cart-item-description">{item.description}</p>
-                    <div className="cart-item-price">
-                      <strong>Price: </strong> ₹{item.price}
+      <Navbar userId={userId} />
+      <div className="cart-container">
+        <h1 className="cart-title">Your Cart</h1>
+        {updateMessage && <div className="update-message">{updateMessage}</div>}
+        <div className="cart-prod">
+          {userId ? (
+            cartItems.length > 0 ? (
+              <div className="cart-items">
+                {cartItems.map((item) => (
+                  <div className="cart-item" key={item._id}>
+                    <img
+                      src={`http://localhost:5000${item.image}`}
+                      alt={item.name}
+                      className="cart-item-img"
+                    />
+                    <div className="cart-item-details">
+                      <h3 className="cart-item-name">{item.name}</h3>
+                      <p className="cart-item-brand">
+                        <strong>Brand:</strong> {item.brand}
+                      </p>
+                      <p className="cart-item-description">
+                        {item.description}
+                      </p>
+                      <div className="cart-item-price">
+                        <strong>Price: </strong> ₹{item.price}
+                      </div>
+                      <div className="cart-item-quantity">
+                        <button
+                          onClick={() => handleQuantityChange(item._id, -1)}
+                          disabled={item.quantity <= 1}
+                          className="quantity-btn"
+                        >
+                          -
+                        </button>
+                        <span className="quantity-display">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => handleQuantityChange(item._id, 1)}
+                          className="quantity-btn"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
-                    <div className="cart-item-quantity">
+                    <div className="cart-item-actions">
                       <button
-                        onClick={() => handleQuantityChange(item._id, -1)}
-                        disabled={item.quantity <= 1}
-                        className="quantity-btn"
+                        className="remove-btn"
+                        onClick={() => handleRemoveItem(item._id)}
                       >
-                        -
-                      </button>
-                      <span className="quantity-display">{item.quantity}</span>
-                      <button
-                        onClick={() => handleQuantityChange(item._id, 1)}
-                        className="quantity-btn"
-                      >
-                        +
+                        Remove
                       </button>
                     </div>
                   </div>
-                  <div className="cart-item-actions">
-                    <button
-                      className="remove-btn"
-                      onClick={() => handleRemoveItem(item._id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <button>buy</button>
-            </div>
-          ) : (
-            <div className="empty-cart">
-              <p>Your cart is empty.</p>
-              <button className="shop-now-btn" onClick={HandleShopNow}>
-                Shop Now
-              </button>
-            </div>
-          )
-        ) : (
-          <p>Please log in to view your cart.</p>
-        )}
-
-        <div className="cart-price-details">
-          <h3>Price Details</h3>
-          <div>
-            <h4>Total items: {cartItems.length}</h4>
-            <h4>Discount: ₹0</h4> {/* Add dynamic discount if needed */}
-            <h4>Platform Fee: ₹50</h4> {/* Add dynamic fee if needed */}
-            <h4>Delivery Fee: ₹20</h4>{" "}
-            {/* Add dynamic delivery fee if needed */}
-          </div>
-          <div>
-            {cartItems.length > 0 && (
-              <div className="total-price">
-                <strong>Total Price: ₹{calculateTotalPrice()}</strong>
+                ))}
+                <button id="cart-prodlist-buy" onClick={handleBuyNow}>Check Out</button>
               </div>
-            )}
-            <button className="buy-now-btn">Buy Now</button>
+            ) : (
+              <div className="empty-cart">
+                <p>Your cart is empty.</p>
+                <button className="shop-now-btn" onClick={HandleShopNow}>
+                  Shop Now
+                </button>
+              </div>
+            )
+          ) : (
+            <p>Please log in to view your cart.</p>
+          )}
+
+          <div className="cart-price-details">
+            <h3>Price Details</h3>
+            <div>
+              <h4>Total items: {cartItems.length}</h4>
+              <h4>Discount: ₹0</h4> 
+              <h4>Platform Fee: ₹50</h4> 
+              <h4>Delivery Fee: ₹20</h4>
+              {/* Added product names and quantities */}
+              <h4>Products in Cart:</h4>
+              <ul id="cart-proddet-list">
+                {cartItems.map((item) => (
+                  <li key={item._id}>
+                    <h4>{item.name} - {item.quantity} * ₹{item.price}</h4>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              {cartItems.length > 0 && (
+                <div className="total-price">
+                  <strong>Total Price: ₹{calculateTotalPrice()}</strong>
+                </div>
+              )}
+              <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

@@ -44,7 +44,7 @@ const Login = () => {
       <div className="lg-container">
         <h2>Login</h2>
         <form onSubmit={handleSubmit} className="form">
-          <div className="input-group">
+          <div className="lg-input-group">
             <label className="label">Email:</label>
             <input
               type="email"
@@ -55,7 +55,7 @@ const Login = () => {
               className="input"
             />
           </div>
-          <div className="input-group">
+          <div className="lg-input-group">
             <label className="label">Password:</label>
             <input
               type="password"

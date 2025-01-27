@@ -4,6 +4,7 @@ import "./HomeStyle.css";
 import bannerImage from "../../assets/banner1.jpeg";
 import bannerImage1 from "../../assets/banner2.jpeg";
 import bannerImage2 from "../../assets/banner3.jpeg";
+import Navbar from "../navbar/Navbar";
 
 const HomePage = () => {
   const location = useLocation();
@@ -99,50 +100,7 @@ const HomePage = () => {
   return (
     <div className="app">
       {/* Navbar */}
-      <nav className="hm-navbar">
-        <div className="nav-logo">
-          <h2 onClick={() => navigate("/home")}>SHOPIQUE</h2>
-        </div>
-        <div className="nav-search-bar">
-          <input
-            type="text"
-            placeholder="Search for products..."
-            aria-label="Search for products"
-          />
-          <button className="nav-btns">
-            <i className="fas fa-search"></i> Search
-          </button>
-        </div>
-        <div className="nav-actions">
-          <button
-            className="nav-btns"
-            onClick={() => {
-              navigate("/cart", { state: { userId: userId } });
-            }}
-          >
-            <i className="fas fa-shopping-cart"></i> Cart
-          </button>
-          {isLoggedIn ? (
-            <button
-              className="nav-btns"
-              onClick={() => {
-                navigate("/profile");
-              }}
-            >
-              <i className="fas fa-user"></i> My Profile
-            </button>
-          ) : (
-            <button
-              className="nav-btns"
-              onClick={() => {
-                navigate("/login"); // Replace with your login navigation logic
-              }}
-            >
-              <i className="fas fa-user"></i> Login
-            </button>
-          )}
-        </div>
-      </nav>
+      <Navbar userId={userId} />
 
       <div className="main-container">
         <div className="content">
@@ -193,6 +151,7 @@ const HomePage = () => {
                         to={`/${item.route}`}
                         state={{
                           userId: userId,
+                          itemId: item._id,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,
@@ -231,6 +190,7 @@ const HomePage = () => {
                         to={`/${item.route}`}
                         state={{
                           userId: userId,
+                          itemId: item._id,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,
@@ -269,6 +229,7 @@ const HomePage = () => {
                         to={`/${item.route}`}
                         state={{
                           userId: userId,
+                          itemId: item._id,
                           name: item.name,
                           price: item.price,
                           brand: item.brand,

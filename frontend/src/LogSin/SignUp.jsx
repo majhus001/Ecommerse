@@ -40,7 +40,7 @@ const SignUp = () => {
       <div className="su-container">
         <h2>Signup</h2>
         <form onSubmit={handleSubmit} className="form">
-          <div className="input-group">
+          <div className="lg-input-group">
             <label className="label">Username:</label>
             <input
               type="text"
@@ -51,7 +51,7 @@ const SignUp = () => {
               className="input"
             />
           </div>
-          <div className="input-group">
+          <div className="lg-input-group">
             <label className="label">Email:</label>
             <input
               type="email"
@@ -62,7 +62,7 @@ const SignUp = () => {
               className="input"
             />
           </div>
-          <div className="input-group">
+          <div className="lg-input-group">
             <label className="label">Password:</label>
             <input
               type="password"

@@ -8,6 +8,7 @@ import ProductAddPage from './Admin/Productadd';
 import ProductList from './screens/Productscreens/ProductList';
 import Cart from './screens/Productscreens/Cart';
 import Navbar from './screens/navbar/Navbar';
+import Orderdetails from './screens/Order/Orderdetails';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/product" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/adprod" element={<ProductAddPage />} />
+        <Route path="/orderdet" element={<Orderdetails />} />
 
       </Routes>
     </Router>

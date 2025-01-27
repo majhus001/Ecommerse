@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 
 const router = express.Router();
 
+
+
 // Product Schema
 const mobileSchema = new mongoose.Schema({
   name: { type: String, required: true }, 

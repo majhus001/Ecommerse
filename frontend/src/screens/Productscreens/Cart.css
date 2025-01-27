@@ -16,6 +16,7 @@
   margin: 0;
   font-size: 24px;
   font-weight: bold;
+  color: #fff;
 }
 
 .nav-search-bar {
@@ -53,6 +54,7 @@
   border: none;
   border-radius: 20px;
   background: #fff;
+  border: 1px solid #fff;
   color: #0056b3;
   font-weight: bold;
   font-size: 14px;
@@ -75,24 +77,50 @@
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
-  .hm-navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
 
-  .nav-search-bar {
-    position: static;
-    transform: none;
-    width: 100%;
-    justify-content: center;
+@keyframes slideFromTop {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
   }
-
-  .nav-search-bar input {
-    width: 100%;
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.update-message {
+  background-color: #157ff0;
+  color: #fff;
+  padding: 10px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+  position: absolute;
+  top: 150px;
+  left: 30%;
+  width: 400px;
+  animation: slideFromTop 0.5s ease-out, fadeOut 1s ease-out 2.5s forwards;
+  /* fadeOut starts after 2.5 seconds */
+}
+
+.update-message:hover {
+  background-color: #fff;
+  color: #157ff0;
+  padding: 10px;
+  border: 1px solid #157ff0;
+}
+
 
 
 .cart-container {
@@ -221,7 +249,7 @@
   flex-direction: column;
   justify-content: flex-start;
   gap: 10px;
-  height: 350px;
+  height: 100%;
   margin-top: 15px;
 }
 
@@ -244,11 +272,58 @@
   font-weight: bold;
 }
 
+#cart-proddet-list {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+#cart-proddet-list li {
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+#cart-proddet-list li h4 {
+  margin: 0;
+}
+
+#cart-proddet-list li .product-details {
+  font-weight: normal;
+}
+
+#cart-proddet-list li .product-price {
+  font-weight: bold;
+  color: #333;
+}
+
+#cart-prodlist-buy{
+  position: absolute;
+  top: 120%;
+  width: 800px;
+  height: 38px;
+  margin-left: 7px;
+  background: #007bff;
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+}
+
+#cart-prodlist-buy:hover{
+  background: #fff;
+  color: #007bff;
+  border: 2px solid #007bff ;
+}
+
 .buy-now-btn {
   margin-top: 1rem;
   background: #007bff;
   color: #fff;
   border: none;
+  border: 2px solid #007bff; /* Add a border for better visibility */
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
   border-radius: 4px;

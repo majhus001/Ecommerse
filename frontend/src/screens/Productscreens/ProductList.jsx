@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ProductList.css";
+import Navbar from "../navbar/Navbar";
 
 const ProductList = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const {
     userId,
+    itemId,
     name,
     price,
     brand,
@@ -17,52 +19,80 @@ const ProductList = () => {
     rating,
     category,
     deliverytime,
-  } = location.state || {}; 
-  console.log(userId);
+  } = location.state || {};
+  const [isProdAdded, setProdAdded] = useState("");
+  const [updateMessage, setUpdateMessage] = useState("");
 
-  const [activeDropdown, setActiveDropdown] = useState(null); // Track which dropdown is open
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  useEffect(() => {
+    const checkIfItemInCart = async () => {
+      try {
+        console.log("f b a");
+        const response = await axios.get(
+          `http://localhost:5000/api/cart/check`,
+          { params: { userId, itemId } }
+        );
+        console.log("f a a");
 
-  const handleDropdownClick = (dropdown) => {
-    setActiveDropdown((prev) => (prev === dropdown ? null : dropdown)); // Toggle the dropdown
-  };
+        if (response.data.exists) {
+          setProdAdded(true);
+        } else {
+          setProdAdded(false);
+        }
+      } catch (error) {
+        console.error("Error checking item in cart:", error);
+      }
+    };
 
-const handleAddToCart = async () => {
-  if (!userId) {
-    alert("Please log in to Add products to Cart.");
-    return;
-  }
+    checkIfItemInCart();
+  }, [userId, itemId]);
 
-  const productDetails = {
-    userId,
-    name,
-    price,
-    brand,
-    stock,
-    description,
-    image,
-    category,
-    deliverytime,
-    rating,
-  };
-
-  try {
-    const response = await axios.post("http://localhost:5000/api/cart", productDetails);
-    if (response.data.success) {
-      alert(`${name} added to cart successfully!`);
-    } else {
-      alert(response.data.message || "Failed to add product to cart.");
+  const handleAddToCart = async () => {
+    if (!userId) {
+      alert("Please log in to Add products to Cart.");
+      return;
     }
-  } catch (error) {
-    console.error("Error adding product to cart:", error);
-    alert("Something went wrong. Please try again.");
+
+    const productDetails = {
+      userId,
+      itemId,
+      name,
+      price,
+      brand,
+      quantity: 1,
+      description,
+      image,
+      category,
+      deliverytime,
+      rating,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/cart/add",
+        productDetails
+      );
+
+      if (response.data.success) {
+        // Update the message and set product added flag
+        setUpdateMessage("Product successfully added to the cart!");
+        setProdAdded(true);
+
+        // Optionally clear the message after some time
+        setTimeout(() => {
+          setUpdateMessage("");
+        }, 3000);
+      } else {
+        alert(response.data.message || "Failed to add product to cart.");
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
+  const handleBuyNow = () => {
+    alert("buyingg....")
   }
-};
-
-const handleCartPage = () => {
-  navigate("/cart", { state: { userId } });
-}
-
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -71,39 +101,10 @@ const handleCartPage = () => {
 
   return (
     <div>
-      {/* Navbar */}
-      <nav className="hm-navbar">
-        <div className="nav-logo">
-          <h2 onClick={() => navigate("/home")}>SHOPIQUE</h2>
-        </div>
-        <div className="nav-search-bar">
-          <input
-            type="text"
-            placeholder="Search for products..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            aria-label="Search for products"
-          />
-          <button>
-            <i className="fas fa-search"></i> Search
-          </button>
-        </div>
-        <div className="nav-actions">
-          <button id="cart" onClick={handleCartPage}>
-            <i className="fas fa-shopping-cart"></i> Cart
-          </button>
-          <button id="login">
-            <i className="fas fa-user"></i> Login
-          </button>
-        </div>
-      </nav>
-
-      {/* Product Page */}
+      <Navbar userId={userId} />
+      {updateMessage && <div className="update-message">{updateMessage}</div>}
       <div className="productlist-page">
-        {/* Product Details Section */}
         <div className="productlist-container">
-          {/* Product Image */}
-
           <div className="prod-img-btn-cont">
             <div className="productlist-image">
               {image ? (
@@ -115,15 +116,28 @@ const handleCartPage = () => {
             <div className="prod-img-btn">
               <button
                 className="add-to-cart-btn"
-                onClick={handleAddToCart}
-                disabled={stock <= 0}
+                onClick={() => {
+                  if (stock <= 0) {
+                    alert("Sorry, Out of Stock");
+                  } else if (isProdAdded) {
+                    navigate("/cart", { state: { userId: userId } });
+                  } else {
+                    handleAddToCart();
+                  }
+                }}
+                disabled={stock <= 0 && !isProdAdded}
               >
                 <i className="fas fa-shopping-cart"></i>
-                {stock > 0 ? "Add to Cart" : "Out of Stock"}
+                {isProdAdded
+                  ? " Go to Cart "
+                  : stock > 0
+                  ? "Add to Cart"
+                  : "Out of Stock"}
               </button>
+
               <button
                 className="add-to-cart-btn"
-                onClick={handleAddToCart}
+                onClick={handleBuyNow}
                 disabled={stock <= 0}
               >
                 {stock > 0 ? "Buy now" : "Out of Stock"}
