@@ -91,8 +91,9 @@ a {
 }
 
 .countdown-timer h3 {
-  font-size: 18px; /* Slightly smaller font size for a compact design */
-  margin: 5px 0 10px 0; /* Reduced margin to save height */
+  font-size: 18px;
+  margin: 5px 0 10px 0; 
+  color: #fff;
 }
 
 .timer {

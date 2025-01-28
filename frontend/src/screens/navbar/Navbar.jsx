@@ -5,6 +5,7 @@ export default function Navbar({ userId, pageno = null }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOrderPage, setIsOrderPage] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -16,6 +17,15 @@ export default function Navbar({ userId, pageno = null }) {
       setIsOrderPage(true);
     }
   }, [userId, pageno]);
+
+  const handleDropdownToggle = () => {
+    setShowDropdown((prev) => !prev);
+  };
+
+  const handleOptionClick = (path) => {
+    setShowDropdown(false); // Close dropdown after clicking an option
+    navigate(path);
+  };
 
   return (
     <nav className="hm-navbar">
@@ -45,14 +55,39 @@ export default function Navbar({ userId, pageno = null }) {
               <i className="fas fa-shopping-cart"></i> Cart
             </button>
             {isLoggedIn ? (
-              <button
-                className="nav-btns"
-                onClick={() => {
-                  navigate("/profile");
-                }}
-              >
-                <i className="fas fa-user"></i> My Profile
-              </button>
+              <div className="nav-profile-dropdown">
+                <button className="nav-btns" onClick={handleDropdownToggle}>
+                  <i className="fas fa-user"></i> My Profile
+                </button>
+                {showDropdown && (
+                  <div className="nav-dropdown-menu">
+                    <div
+                      className="nav-dropdown-item"
+                      onClick={() => handleOptionClick("/profile")}
+                    >
+                      Profile
+                    </div>
+                    <div
+                      className="nav-dropdown-item"
+                      onClick={() => handleOptionClick("/wishlist")}
+                    >
+                      Wishlist
+                    </div>
+                    <div
+                      className="nav-dropdown-item"
+                      onClick={() => handleOptionClick("/orders")}
+                    >
+                      My Orders
+                    </div>
+                    <div
+                      className="nav-dropdown-item"
+                      onClick={() => handleOptionClick("/logout")}
+                    >
+                      Logout
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
               <button
                 className="nav-btns"
@@ -68,14 +103,39 @@ export default function Navbar({ userId, pageno = null }) {
       ) : (
         <div className="nav-actions">
           {isLoggedIn ? (
-            <button
-              className="nav-btns"
-              onClick={() => {
-                navigate("/profile");
-              }}
-            >
-              <i className="fas fa-user"></i> My Profile
-            </button>
+            <div className="nav-profile-dropdown">
+              <button className="nav-btns" onClick={handleDropdownToggle}>
+                <i className="fas fa-user"></i> My Profile
+              </button>
+              {showDropdown && (
+                <div className="nav-dropdown-menu">
+                  <div
+                    className="nav-dropdown-item"
+                    onClick={() => handleOptionClick("/profile")}
+                  >
+                    <span>Profile</span>
+                  </div>
+                  <div
+                    className="nav-dropdown-item"
+                    onClick={() => handleOptionClick("/wishlist")}
+                  >
+                    Wishlist
+                  </div>
+                  <div
+                    className="nav-dropdown-item"
+                    onClick={() => handleOptionClick("/orders")}
+                  >
+                    My Orders
+                  </div>
+                  <div
+                    className="nav-dropdown-item"
+                    onClick={() => handleOptionClick("/logout")}
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               className="nav-btns"
