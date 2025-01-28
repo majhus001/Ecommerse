@@ -1,31 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import "./Navbar.css";
 
 export default function Navbar({ userId, pageno = null }) {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOrderPage, setIsOrderPage] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/auth/fetch/${userId}`
+        );
+        const username = response.data.data;
+        console.log("User Name :", username);
+        setUsername(username);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
     if (userId) {
+      fetchUserData();
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
+
     if (pageno === "123") {
       setIsOrderPage(true);
+    } else {
+      setIsOrderPage(false);
     }
   }, [userId, pageno]);
-
-  const handleDropdownToggle = () => {
-    setShowDropdown((prev) => !prev);
-  };
-
-  const handleOptionClick = (path) => {
-    setShowDropdown(false); // Close dropdown after clicking an option
-    navigate(path);
-  };
 
   return (
     <nav className="hm-navbar">
@@ -41,59 +51,35 @@ export default function Navbar({ userId, pageno = null }) {
               placeholder="Search for products..."
               aria-label="Search for products"
             />
-            <button className="nav-btns">
+            <button className="nav-btns" aria-label="Search">
               <i className="fas fa-search"></i> Search
             </button>
           </div>
+
           <div className="nav-actions">
             <button
               className="nav-btns"
               onClick={() => {
                 navigate("/cart", { state: { userId: userId } });
               }}
+              aria-label="Go to cart"
             >
               <i className="fas fa-shopping-cart"></i> Cart
             </button>
+
             {isLoggedIn ? (
-              <div className="nav-profile-dropdown">
-                <button className="nav-btns" onClick={handleDropdownToggle}>
-                  <i className="fas fa-user"></i> My Profile
-                </button>
-                {showDropdown && (
-                  <div className="nav-dropdown-menu">
-                    <div
-                      className="nav-dropdown-item"
-                      onClick={() => handleOptionClick("/profile")}
-                    >
-                      Profile
-                    </div>
-                    <div
-                      className="nav-dropdown-item"
-                      onClick={() => handleOptionClick("/wishlist")}
-                    >
-                      Wishlist
-                    </div>
-                    <div
-                      className="nav-dropdown-item"
-                      onClick={() => handleOptionClick("/orders")}
-                    >
-                      My Orders
-                    </div>
-                    <div
-                      className="nav-dropdown-item"
-                      onClick={() => handleOptionClick("/logout")}
-                    >
-                      Logout
-                    </div>
-                  </div>
-                )}
-              </div>
+              <button
+                className="nav-btns my-prof-btn"
+                onClick={() => navigate("/userprofile", { state: { userId } })}
+                aria-label="Go to profile page"
+              >
+                <i className="fas fa-user"></i> {username}
+              </button>
             ) : (
               <button
                 className="nav-btns"
-                onClick={() => {
-                  navigate("/login");
-                }}
+                onClick={() => navigate("/login")}
+                aria-label="Login"
               >
                 <i className="fas fa-user"></i> Login
               </button>
@@ -103,45 +89,18 @@ export default function Navbar({ userId, pageno = null }) {
       ) : (
         <div className="nav-actions">
           {isLoggedIn ? (
-            <div className="nav-profile-dropdown">
-              <button className="nav-btns" onClick={handleDropdownToggle}>
-                <i className="fas fa-user"></i> My Profile
-              </button>
-              {showDropdown && (
-                <div className="nav-dropdown-menu">
-                  <div
-                    className="nav-dropdown-item"
-                    onClick={() => handleOptionClick("/profile")}
-                  >
-                    <span>Profile</span>
-                  </div>
-                  <div
-                    className="nav-dropdown-item"
-                    onClick={() => handleOptionClick("/wishlist")}
-                  >
-                    Wishlist
-                  </div>
-                  <div
-                    className="nav-dropdown-item"
-                    onClick={() => handleOptionClick("/orders")}
-                  >
-                    My Orders
-                  </div>
-                  <div
-                    className="nav-dropdown-item"
-                    onClick={() => handleOptionClick("/logout")}
-                  >
-                    Logout
-                  </div>
-                </div>
-              )}
-            </div>
+            <button
+              className="nav-btns"
+              onClick={() => navigate("/userprofile", { state: { userId } })}
+              aria-label="Go to profile page"
+            >
+              <i className="fas fa-user"></i> {username}
+            </button>
           ) : (
             <button
               className="nav-btns"
-              onClick={() => {
-                navigate("/login");
-              }}
+              onClick={() => navigate("/login")}
+              aria-label="Login"
             >
               <i className="fas fa-user"></i> Login
             </button>

@@ -1,0 +1,42 @@
+General container to hold all content
+.user-prof {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* Navbar fixed to top */
+  .user-prof-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10; /* Ensure it stays above the content */
+    width: 100%;
+    background-color: #fff; /* Set your navbar background color */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  }
+  
+  /* Sidebar fixed to the left */
+  .user-side-prof {
+    display: flex;
+    height: 100vh; /* Full height */
+    margin-top: 60px; /* Adjust to navbar height */
+  }
+  
+ 
+  
+  /* Content section - ProductList */
+  .user-prof-cont {
+    flex-grow: 1;
+    margin-top: 200px;
+    margin-left: 250px; /* Offset by sidebar width */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px); /* Full height minus navbar */
+    z-index: 1;
+  }
+  
+  

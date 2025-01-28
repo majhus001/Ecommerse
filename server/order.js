@@ -128,4 +128,23 @@ router.post("/add", async (req, res) => {
   }
 });
 
+router.get("/fetch/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  console.log("orders fetching...")
+  console.log(userId)
+
+  try {
+    const MyOrders = await Order.find({ userId });
+    console.log("-------------------------------") 
+    if(MyOrders){
+      console.log("true")
+    }
+    return res.status(201).json({
+      message: "Order fetched successfully!", data: MyOrders,
+     })
+  } catch (error) {
+    console.error("Error fetching orders:", error); 
+  }
+});
+
 module.exports = router;
